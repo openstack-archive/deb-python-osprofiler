@@ -1,0 +1,5 @@
+python-osprofiler (0.3.0-1) unstable; urgency=medium
+
+  * Initial release. (Closes: #760529)
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 05 Sep 2014 09:38:53 +0800

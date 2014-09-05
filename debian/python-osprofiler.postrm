@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "remove" ] || [ "$1" = "disappear" ]; then
+	update-alternatives --remove osprofiler /usr/bin/python2-osprofiler
+fi
+
+#DEBHELPER#
+
+exit 0
+

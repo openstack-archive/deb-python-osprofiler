@@ -1,0 +1,59 @@
+#!/usr/bin/make -f
+
+PYTHONS:=$(shell pyversions -vr)
+PYTHON3S:=$(shell py3versions -vr)
+
+UPSTREAM_GIT = git://github.com/stackforge/osprofiler.git
+include /usr/share/openstack-pkg-tools/pkgos.make
+
+export OSLO_PACKAGE_VERSION=$(VERSION)
+
+%:
+	dh $@ --buildsystem=python_distutils --with python2,python3,sphinxdoc
+
+override_dh_install:
+	set -e && for pyvers in $(PYTHONS); do \
+		python$$pyvers setup.py install --install-layout=deb \
+			--root $(CURDIR)/debian/python-osprofiler; \
+	done
+	set -e && for pyvers in $(PYTHON3S); do \
+		python$$pyvers setup.py install --install-layout=deb \
+			--root $(CURDIR)/debian/python3-osprofiler; \
+	done
+	mv $(CURDIR)/debian/python-osprofiler/usr/bin/osprofiler $(CURDIR)/debian/python-osprofiler/usr/bin/python2-osprofiler
+	mv $(CURDIR)/debian/python3-osprofiler/usr/bin/osprofiler $(CURDIR)/debian/python3-osprofiler/usr/bin/python3-osprofiler
+	rm -rf $(CURDIR)/debian/python*-osprofiler/usr/lib/python*/dist-packages/*.pth
+
+override_dh_auto_test:
+ifeq (,$(findstring nocheck, $(DEB_BUILD_OPTIONS)))
+	echo "===> Running tests"
+	set -ex ; for i in $(PYTHONS) $(PYTHON3S) ; do \
+		PYMAJOR=`echo $$i | cut -d'.' -f1` ; \
+		echo "===> Testing with python$$i (python$$PYMAJOR)" ; \
+		rm -rf .testrepository ; \
+		testr-python$$PYMAJOR init ; \
+		TEMP_REZ=`mktemp -t` ; \
+		PYTHONPATH=$(CURDIR) PYTHON=python$$i testr-python$$PYMAJOR run --subunit 'tests\.(?!.*OptsTestCase.test_entry_point.*)' | tee $$TEMP_REZ | subunit2pyunit ; \
+		cat $$TEMP_REZ | subunit-filter -s --no-passthrough | subunit-stats ; \
+		rm -f $$TEMP_REZ ; \
+		testr-python$$PYMAJOR slowest ; \
+	done
+endif
+
+override_dh_clean:
+	dh_clean -O--buildsystem=python_distutils
+	rm -rf build
+
+override_dh_sphinxdoc:
+	sphinx-build -b html doc/source debian/python-osprofiler-doc/usr/share/doc/python-osprofiler-doc/html
+	dh_sphinxdoc -O--buildsystem=python_distutils
+
+# Commands not to run
+override_dh_installcatalogs:
+override_dh_installemacsen override_dh_installifupdown:
+override_dh_installinfo override_dh_installmenu override_dh_installmime:
+override_dh_installmodules override_dh_installlogcheck:
+override_dh_installpam override_dh_installppp override_dh_installudev override_dh_installwm:
+override_dh_installxfonts override_dh_gconf override_dh_icons override_dh_perl override_dh_usrlocal:
+override_dh_installcron override_dh_installdebconf:
+override_dh_installlogrotate override_dh_installgsettings:

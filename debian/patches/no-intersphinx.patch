@@ -1,0 +1,16 @@
+Description: No intersphinx
+ Avoid intersphinx so that there's no network access during build.
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2014-09-05
+
+--- python-osprofiler-0.3.0.orig/doc/source/conf.py
++++ python-osprofiler-0.3.0/doc/source/conf.py
+@@ -33,7 +33,6 @@ sys.path.extend([
+ extensions = [
+     'sphinx.ext.autodoc',
+     'sphinx.ext.doctest',
+-    'sphinx.ext.intersphinx',
+     'sphinx.ext.todo',
+     'sphinx.ext.coverage',
+     'sphinx.ext.ifconfig',
