@@ -1,3 +1,9 @@
+python-osprofiler (0.3.0-2) unstable; urgency=medium
+
+  * Made build reproducible (Closes: #788503). Thanks to Juan Picca.
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 12 Jun 2015 11:18:04 +0200
+
 python-osprofiler (0.3.0-1) unstable; urgency=medium
 
   * Initial release. (Closes: #760529)

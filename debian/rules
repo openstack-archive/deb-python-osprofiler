@@ -1,5 +1,9 @@
 #!/usr/bin/make -f
 
+LAST_CHANGE = $(shell dpkg-parsechangelog -S Date)
+BUILD_DATE  = $(shell LC_ALL=C date -u "+%B %d, %Y" -d "$(LAST_CHANGE)")
+SPHINXOPTS := -D html_last_updated_fmt="$(BUILD_DATE)"
+
 PYTHONS:=$(shell pyversions -vr)
 PYTHON3S:=$(shell py3versions -vr)
 
@@ -45,7 +49,7 @@ override_dh_clean:
 	rm -rf build
 
 override_dh_sphinxdoc:
-	sphinx-build -b html doc/source debian/python-osprofiler-doc/usr/share/doc/python-osprofiler-doc/html
+	sphinx-build $(SPHINXOPTS) -b html doc/source debian/python-osprofiler-doc/usr/share/doc/python-osprofiler-doc/html
 	dh_sphinxdoc -O--buildsystem=python_distutils
 
 # Commands not to run
