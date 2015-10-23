@@ -4,8 +4,9 @@ Priority: optional
 Maintainer: PKG OpenStack <openstack-devel@lists.alioth.debian.org>
 Uploaders: Thomas Goirand <zigo@debian.org>
 Build-Depends: debhelper (>= 9),
+               dh-python,
                openstack-pkg-tools,
-               python-all (>= 2.6.6-3~),
+               python-all,
                python-pbr,
                python-setuptools,
                python-sphinx,
@@ -33,7 +34,6 @@ Homepage: https://github.com/stackforge/osprofiler
 
 Package: python-osprofiler
 Architecture: all
-Pre-Depends: dpkg (>= 1.15.6~)
 Depends: python-six (>= 1.7.0),
          python-webob (>= 1.2.3),
          ${misc:Depends},
@@ -55,7 +55,6 @@ Description: OpenStack Profiler Library - Python 2.x
 
 Package: python3-osprofiler
 Architecture: all
-Pre-Depends: dpkg (>= 1.15.6~)
 Depends: python3-six (>= 1.7.0),
          python3-webob (>= 1.2.3),
          ${misc:Depends},
@@ -78,7 +77,6 @@ Description: OpenStack Profiler Library - Python 3.x
 Package: python-osprofiler-doc
 Section: doc
 Architecture: all
-Pre-Depends: dpkg (>= 1.15.6~)
 Depends: ${misc:Depends}, ${sphinxdoc:Depends}
 Description: OpenStack Profiler Library - doc
  OpenStack consists of multiple projects. Each project, in turn, is composed of
