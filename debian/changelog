@@ -1,3 +1,9 @@
+python-osprofiler (0.3.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 07 Dec 2015 18:08:09 +0100
+
 python-osprofiler (0.3.0-3) unstable; urgency=medium
 
   * override_dh_python3 to fix Py3 shebang.
