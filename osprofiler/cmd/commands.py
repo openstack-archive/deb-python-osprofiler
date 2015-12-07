@@ -59,9 +59,11 @@ class TraceCommands(BaseCommand):
 
         if not notifications:
             msg = ("Trace with UUID %s not found. "
-                   "There are 2 possible reasons: \n"
+                   "There are 3 possible reasons: \n"
                    " 1) You are using not admin credentials\n"
-                   " 2) You specified wrong trace id" % args.trace_id)
+                   " 2) You specified wrong trace id\n"
+                   " 3) You specified wrong HMAC Key in original calling"
+                   % args.trace_id)
             raise exc.CommandError(msg)
 
         parsed_notifications = ceiloparser.parse_notifications(notifications)
@@ -72,7 +74,7 @@ class TraceCommands(BaseCommand):
             with open(os.path.join(os.path.dirname(__file__),
                                    "template.html")) as html_template:
                 output = html_template.read().replace(
-                    "$DATA", json.dumps(parsed_notifications))
+                    "$DATA", json.dumps(parsed_notifications, indent=2))
         else:
             raise exc.CommandError("You should choose one of the following "
                                    "output-formats: --json or --html.")
