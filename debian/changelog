@@ -1,6 +1,7 @@
 python-osprofiler (0.3.1-1) unstable; urgency=medium
 
   * New upstream release.
+  * Removed the no-intersphinx patch.
 
  -- Thomas Goirand <zigo@debian.org>  Mon, 07 Dec 2015 18:08:09 +0100
 
