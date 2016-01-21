@@ -139,7 +139,7 @@ class ShellTestCase(test.TestCase):
             pass
 
         self.ceiloclient.client.get_client.side_effect = FakeException
-        msg = "Something has gone wrong. See logs for more details."
+        msg = "Something has gone wrong. See logs for more details"
         self._test_with_command_error("trace show fake_id", msg)
 
     @mock.patch("osprofiler.parsers.ceilometer.get_notifications")
@@ -188,7 +188,7 @@ class ShellTestCase(test.TestCase):
                 "started": 0, "finished": 0, "name": "total"}, "children": []}
         mock_notifications.return_value = notifications
 
-        #NOTE(akurilin): to simplify assert statement, html-template should be
+        # NOTE(akurilin): to simplify assert statement, html-template should be
         # replaced.
         html_template = (
             "A long time ago in a galaxy far, far away..."

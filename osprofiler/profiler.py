@@ -14,10 +14,14 @@
 #    under the License.
 
 import collections
+import datetime
 import functools
 import inspect
+import socket
 import threading
 import uuid
+
+import six
 
 from osprofiler import notifier
 
@@ -151,6 +155,52 @@ def trace_cls(name, info=None, hide_args=False, trace_private=False):
     return decorator
 
 
+class TracedMeta(type):
+    """Metaclass to comfortably trace all children of a specific class.
+
+    Possible usage:
+
+    >>>  @six.add_metaclass(profiler.TracedMeta)
+    >>>  class RpcManagerClass(object):
+    >>>      __trace_args__ = {'name': 'rpc',
+    >>>                        'info': None,
+    >>>                        'hide_args': False,
+    >>>                        'trace_private': False}
+    >>>
+    >>>      def my_method(self, some_args):
+    >>>          pass
+    >>>
+    >>>      def my_method2(self, some_arg1, some_arg2, kw=None, kw2=None)
+    >>>          pass
+
+    Adding of this metaclass requires to set __trace_args__ attribute to the
+    class we want to modify. __trace_args__ is the dictionary with one
+    mandatory key included - "name", that will define name of action to be
+    traced - E.g. wsgi, rpc, db, etc...
+    """
+    def __init__(cls, cls_name, bases, attrs):
+        super(TracedMeta, cls).__init__(cls_name, bases, attrs)
+
+        trace_args = dict(getattr(cls, "__trace_args__", {}))
+        trace_private = trace_args.pop("trace_private", False)
+        if "name" not in trace_args:
+            raise TypeError("Please specify __trace_args__ class level "
+                            "dictionary attribute with mandatory 'name' key - "
+                            "e.g. __trace_args__ = {'name': 'rpc'}")
+
+        for attr_name, attr_value in six.iteritems(attrs):
+            if not (inspect.ismethod(attr_value) or
+                    inspect.isfunction(attr_value)):
+                continue
+            if attr_name.startswith("__"):
+                continue
+            if not trace_private and attr_name.startswith("_"):
+                continue
+
+            setattr(cls, attr_name, trace(**trace_args)(getattr(cls,
+                                                                attr_name)))
+
+
 class Trace(object):
 
     def __init__(self, name, info=None):
@@ -197,9 +247,10 @@ class _Profiler(object):
             base_id = str(uuid.uuid4())
         self._trace_stack = collections.deque([base_id, parent_id or base_id])
         self._name = collections.deque()
+        self._host = socket.gethostname()
 
     def get_base_id(self):
-        """Return base if of trace.
+        """Return base id of a trace.
 
         Base id is the same for all elements in one trace. It's main goal is
         to be able to retrieve by one request all trace elements from storage.
@@ -224,7 +275,7 @@ class _Profiler(object):
         trace_id - current event id.
 
         As we are writing this code special for OpenStack, and there will be
-        only one implementation of notifier based on ceilometer notifer api.
+        only one implementation of notifier based on ceilometer notifier api.
         That already contains timestamps, so we don't measure time by hand.
 
         :param name: name of trace element (db, wsgi, rpc, etc..)
@@ -232,6 +283,8 @@ class _Profiler(object):
                      trace element. (sql request, rpc message or url...)
         """
 
+        info = info or {}
+        info["host"] = self._host
         self._name.append(name)
         self._trace_stack.append(str(uuid.uuid4()))
         self._notify("%s-start" % name, info)
@@ -243,7 +296,9 @@ class _Profiler(object):
 
         :param info: Dict with useful info. It will be send in notification.
         """
-        self._notify('%s-stop' % self._name.pop(), info)
+        info = info or {}
+        info["host"] = self._host
+        self._notify("%s-stop" % self._name.pop(), info)
         self._trace_stack.pop()
 
     def _notify(self, name, info):
@@ -251,7 +306,8 @@ class _Profiler(object):
             "name": name,
             "base_id": self.get_base_id(),
             "trace_id": self.get_id(),
-            "parent_id": self.get_parent_id()
+            "parent_id": self.get_parent_id(),
+            "timestamp": datetime.datetime.utcnow(),
         }
         if info:
             payload["info"] = info

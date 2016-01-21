@@ -36,9 +36,9 @@ def add_tracing(sqlalchemy, engine, name):
     """Add tracing to all sqlalchemy calls."""
 
     if not _DISABLED:
-        sqlalchemy.event.listen(engine, 'before_cursor_execute',
+        sqlalchemy.event.listen(engine, "before_cursor_execute",
                                 _before_cursor_execute(name))
-        sqlalchemy.event.listen(engine, 'after_cursor_execute',
+        sqlalchemy.event.listen(engine, "after_cursor_execute",
                                 _after_cursor_execute())
 
 
@@ -46,7 +46,10 @@ def _before_cursor_execute(name):
     """Add listener that will send trace info before query is executed."""
 
     def handler(conn, cursor, statement, params, context, executemany):
-        info = {"db.statement": statement, "db.params": params}
+        info = {"db": {
+            "statement": statement,
+            "params": params}
+        }
         profiler.start(name, info=info)
 
     return handler
