@@ -2,7 +2,7 @@ Source: python-osprofiler
 Section: python
 Priority: optional
 Maintainer: PKG OpenStack <openstack-devel@lists.alioth.debian.org>
-Uploaders: Thomas Goirand <zigo@debian.org>
+Uploaders: Thomas Goirand <zigo@debian.org>,
 Build-Depends: debhelper (>= 9),
                dh-python,
                openstack-pkg-tools,
@@ -12,7 +12,7 @@ Build-Depends: debhelper (>= 9),
                python-sphinx,
                python3-all,
                python3-pbr,
-               python3-setuptools
+               python3-setuptools,
 Build-Depends-Indep: python-hacking (>= 0.8.0),
                      python-mock (>= 1.3),
                      python-oslosphinx (>= 2.5.0),
@@ -27,7 +27,7 @@ Build-Depends-Indep: python-hacking (>= 0.8.0),
                      python3-testtools (>= 1.4.0),
                      python3-webob (>= 1.2.3),
                      subunit (>= 0.0.18),
-                     testrepository (>= 0.0.18)
+                     testrepository (>= 0.0.18),
 Standards-Version: 3.9.6
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/python-osprofiler.git
 Vcs-Git: git://anonscm.debian.org/openstack/python-osprofiler.git
@@ -38,7 +38,7 @@ Architecture: all
 Depends: python-six (>= 1.9.0),
          python-webob (>= 1.2.3),
          ${misc:Depends},
-         ${python:Depends}
+         ${python:Depends},
 Description: OpenStack Profiler Library - Python 2.x
  OpenStack consists of multiple projects. Each project, in turn, is composed of
  multiple services. To process some request, e.g. to boot a virtual machine,
@@ -59,7 +59,7 @@ Architecture: all
 Depends: python3-six (>= 1.9.0),
          python3-webob (>= 1.2.3),
          ${misc:Depends},
-         ${python3:Depends}
+         ${python3:Depends},
 Description: OpenStack Profiler Library - Python 3.x
  OpenStack consists of multiple projects. Each project, in turn, is composed of
  multiple services. To process some request, e.g. to boot a virtual machine,
@@ -78,7 +78,8 @@ Description: OpenStack Profiler Library - Python 3.x
 Package: python-osprofiler-doc
 Section: doc
 Architecture: all
-Depends: ${misc:Depends}, ${sphinxdoc:Depends}
+Depends: ${misc:Depends},
+         ${sphinxdoc:Depends},
 Description: OpenStack Profiler Library - doc
  OpenStack consists of multiple projects. Each project, in turn, is composed of
  multiple services. To process some request, e.g. to boot a virtual machine,

@@ -5,6 +5,7 @@ python-osprofiler (0.4.0-1) experimental; urgency=medium
   * Fixed watch file to use github tag rather than broken pypi.
   * Fixed debian/copyright ordering.
   * Standards-Version is now 3.9.6 (no change).
+  * Ran wrap-and-sort -t -a.
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 21 Jan 2016 03:32:01 +0000
 
