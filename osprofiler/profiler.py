@@ -21,6 +21,7 @@ import socket
 import threading
 import uuid
 
+from oslo_utils import reflection
 import six
 
 from osprofiler import notifier
@@ -93,13 +94,20 @@ def trace(name, info=None, hide_args=False):
                       if you have some info in args that you wont to share,
                       e.g. passwords.
     """
-    info = info or {}
+    if not info:
+        info = {}
+    else:
+        info = info.copy()
+    info["function"] = {}
 
     def decorator(f):
 
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
-            info["function"] = {"name": _get_full_func_name(f)}
+            if "name" not in info["function"]:
+                # Get this once (as it should **not** be changing in
+                # subsequent calls).
+                info["function"]["name"] = reflection.get_callable_name(f)
 
             if not hide_args:
                 info["function"]["args"] = str(args)
@@ -140,6 +148,8 @@ def trace_cls(name, info=None, hide_args=False, trace_private=False):
     """
 
     def decorator(cls):
+        clss = cls if inspect.isclass(cls) else cls.__class__
+        mro_dicts = [c.__dict__ for c in inspect.getmro(clss)]
         for attr_name, attr in inspect.getmembers(cls):
             if not (inspect.ismethod(attr) or inspect.isfunction(attr)):
                 continue
@@ -148,8 +158,21 @@ def trace_cls(name, info=None, hide_args=False, trace_private=False):
             if not trace_private and attr_name.startswith("_"):
                 continue
 
-            setattr(cls, attr_name,
-                    trace(name, info=info, hide_args=hide_args)(attr))
+            wrapped_obj = None
+            for cls_dict in mro_dicts:
+                if attr_name in cls_dict:
+                    wrapped_obj = cls_dict[attr_name]
+                    break
+
+            wrapped_method = trace(name, info=info, hide_args=hide_args)(attr)
+            if isinstance(wrapped_obj, staticmethod):
+                # FIXME(dbelova): tracing staticmethod is prone to issues,
+                # there are lots of edge cases, so let's figure that out later.
+                continue
+                # wrapped_method = staticmethod(wrapped_method)
+            elif isinstance(wrapped_obj, classmethod):
+                wrapped_method = classmethod(wrapped_method)
+            setattr(cls, attr_name, wrapped_method)
         return cls
 
     return decorator
@@ -228,17 +251,6 @@ class Trace(object):
         stop()
 
 
-def _get_full_func_name(f):
-    if hasattr(f, "__qualname__"):
-        # NOTE(boris-42): Most proper way to get full name in py33
-        return ".".join([f.__module__, f.__qualname__])
-
-    if inspect.ismethod(f):
-        return ".".join([f.__module__, f.im_class.__name__, f.__name__])
-
-    return ".".join([f.__module__, f.__name__])
-
-
 class _Profiler(object):
 
     def __init__(self, hmac_key, base_id=None, parent_id=None):
@@ -307,7 +319,8 @@ class _Profiler(object):
             "base_id": self.get_base_id(),
             "trace_id": self.get_id(),
             "parent_id": self.get_parent_id(),
-            "timestamp": datetime.datetime.utcnow(),
+            "timestamp": datetime.datetime.utcnow().strftime(
+                "%Y-%m-%dT%H:%M:%S.%f"),
         }
         if info:
             payload["info"] = info

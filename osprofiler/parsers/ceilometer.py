@@ -68,12 +68,8 @@ def parse_notifications(notifications):
         host = find_field("host")
         timestamp = find_field("timestamp")
 
-        try:
-            timestamp = datetime.datetime.strptime(timestamp,
-                                                   "%Y-%m-%dT%H:%M:%S.%f")
-        except ValueError:
-            timestamp = datetime.datetime.strptime(timestamp,
-                                                   "%Y-%m-%dT%H:%M:%S")
+        timestamp = datetime.datetime.strptime(timestamp,
+                                               "%Y-%m-%dT%H:%M:%S.%f")
 
         if trace_id not in result:
             result[trace_id] = {
@@ -81,19 +77,14 @@ def parse_notifications(notifications):
                     "name": name.split("-")[0],
                     "project": project,
                     "service": service,
-                    "meta.host": host,
                     "host": host,
                 },
                 "trace_id": trace_id,
                 "parent_id": parent_id,
             }
 
-        skip_keys = ["base_id", "trace_id", "parent_id",
-                     "name", "project", "service", "host", "timestamp"]
-
-        for k in traits:
-            if k["name"] not in skip_keys:
-                result[trace_id]["info"]["meta.%s" % k["name"]] = k["value"]
+        result[trace_id]["info"]["meta.raw_payload.%s" % name] = n.get(
+            "raw", {}).get("payload", {})
 
         if name.endswith("stop"):
             result[trace_id]["info"]["finished"] = timestamp

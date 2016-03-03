@@ -22,8 +22,7 @@ import re
 import six
 
 from osprofiler import profiler
-
-from tests import test
+from osprofiler.tests import test
 
 
 class ProfilerGlobMethodsTestCase(test.TestCase):
@@ -103,7 +102,7 @@ class ProfilerTestCase(test.TestCase):
             "parent_id": "2",
             "trace_id": "44",
             "info": info,
-            "timestamp": now,
+            "timestamp": now.strftime("%Y-%m-%dT%H:%M:%S.%f"),
         }
 
         prof = profiler._Profiler("secret", base_id="1", parent_id="2")
@@ -129,7 +128,7 @@ class ProfilerTestCase(test.TestCase):
             "parent_id": "2",
             "trace_id": "44",
             "info": info,
-            "timestamp": now,
+            "timestamp": now.strftime("%Y-%m-%dT%H:%M:%S.%f"),
         }
 
         mock_notify.assert_called_once_with(payload)
@@ -177,7 +176,7 @@ class TraceDecoratorTestCase(test.TestCase):
         expected_info = {
             "info": "some_info",
             "function": {
-                "name": "tests.test_profiler.tracede_func",
+                "name": "osprofiler.tests.test_profiler.tracede_func",
                 "args": str((1,)),
                 "kwargs": str({})
             }
@@ -191,7 +190,7 @@ class TraceDecoratorTestCase(test.TestCase):
         self.assertEqual((1, 2), trace_hide_args_func(1, i=2))
         expected_info = {
             "function": {
-                "name": "tests.test_profiler.trace_hide_args_func"
+                "name": "osprofiler.tests.test_profiler.trace_hide_args_func"
             }
         }
         mock_start.assert_called_once_with("hide_args", info=expected_info)
@@ -228,6 +227,13 @@ class FakeTracePrivate(FakeTracedCls):
     pass
 
 
+@profiler.trace_cls("rpc")
+class FakeTraceStatic(FakeTracedCls):
+    @staticmethod
+    def method4(arg):
+        return arg
+
+
 def py3_info(info):
     # NOTE(boris-42): py33 I hate you.
     info_py3 = copy.deepcopy(info)
@@ -252,7 +258,8 @@ class TraceClsDecoratorTestCase(test.TestCase):
         expected_info = {
             "a": 10,
             "function": {
-                "name": "tests.test_profiler.FakeTraceClassWithInfo.method1",
+                "name": ("osprofiler.tests.test_profiler"
+                         ".FakeTraceClassWithInfo.method1"),
                 "args": str((fake_cls, 5, 15)),
                 "kwargs": str({})
             }
@@ -270,7 +277,8 @@ class TraceClsDecoratorTestCase(test.TestCase):
         expected_info = {
             "a": 10,
             "function": {
-                "name": "tests.test_profiler.FakeTraceClassWithInfo.method3",
+                "name": ("osprofiler.tests.test_profiler"
+                         ".FakeTraceClassWithInfo.method3"),
                 "args": str((fake_cls,)),
                 "kwargs": str({"g": 5, "h": 10})
             }
@@ -296,7 +304,8 @@ class TraceClsDecoratorTestCase(test.TestCase):
         expected_info = {
             "b": 20,
             "function": {
-                "name": "tests.test_profiler.FakeTraceClassHideArgs.method1"
+                "name": ("osprofiler.tests.test_profiler"
+                         ".FakeTraceClassHideArgs.method1"),
             }
         }
 
@@ -313,8 +322,39 @@ class TraceClsDecoratorTestCase(test.TestCase):
 
         expected_info = {
             "function": {
-                "name": "tests.test_profiler.FakeTracePrivate._method",
+                "name": ("osprofiler.tests.test_profiler"
+                         ".FakeTracePrivate._method"),
                 "args": str((fake_cls, 5)),
+                "kwargs": str({})
+            }
+        }
+
+        self.assertEqual(1, len(mock_start.call_args_list))
+        self.assertIn(mock_start.call_args_list[0],
+                      possible_mock_calls("rpc", expected_info))
+        mock_stop.assert_called_once_with()
+
+    @mock.patch("osprofiler.profiler.stop")
+    @mock.patch("osprofiler.profiler.start")
+    @test.testcase.skip(
+        "Static method tracing was disabled due the bug. This test should be "
+        "skipped until we find the way to address it.")
+    def test_static(self, mock_start, mock_stop):
+        fake_cls = FakeTraceStatic()
+
+        self.assertEqual(25, fake_cls.method4(25))
+
+        expected_info = {
+            "function": {
+                # fixme(boris-42): Static methods are treated differently in
+                #                  Python 2.x and Python 3.x. So in PY2 we
+                #                  expect to see method4 because method is
+                #                  static and doesn't have reference to class
+                #                  - and FakeTraceStatic.method4 in PY3
+                "name":
+                    "osprofiler.tests.test_profiler.method4" if six.PY2 else
+                    "osprofiler.tests.test_profiler.FakeTraceStatic.method4",
+                "args": str((25,)),
                 "kwargs": str({})
             }
         }
@@ -382,8 +422,8 @@ class TraceWithMetaclassTestCase(test.TestCase):
         expected_info = {
             "a": 10,
             "function": {
-                "name":
-                    "tests.test_profiler.FakeTraceWithMetaclassBase.method1",
+                "name": ("osprofiler.tests.test_profiler"
+                         ".FakeTraceWithMetaclassBase.method1"),
                 "args": str((fake_cls, 5, 15)),
                 "kwargs": str({})
             }
@@ -401,8 +441,8 @@ class TraceWithMetaclassTestCase(test.TestCase):
         expected_info = {
             "a": 10,
             "function": {
-                "name":
-                    "tests.test_profiler.FakeTraceWithMetaclassBase.method3",
+                "name": ("osprofiler.tests.test_profiler"
+                         ".FakeTraceWithMetaclassBase.method3"),
                 "args": str((fake_cls,)),
                 "kwargs": str({"g": 5, "h": 10})
             }
@@ -428,8 +468,8 @@ class TraceWithMetaclassTestCase(test.TestCase):
         expected_info = {
             "b": 20,
             "function": {
-                "name": "tests.test_profiler.FakeTraceWithMetaclassHideArgs."
-                        "method5"
+                "name": ("osprofiler.tests.test_profiler"
+                         ".FakeTraceWithMetaclassHideArgs.method5")
             }
         }
 
@@ -446,8 +486,8 @@ class TraceWithMetaclassTestCase(test.TestCase):
 
         expected_info = {
             "function": {
-                "name": "tests.test_profiler.FakeTraceWithMetaclassPrivate."
-                        "_new_private_method",
+                "name": ("osprofiler.tests.test_profiler"
+                         ".FakeTraceWithMetaclassPrivate._new_private_method"),
                 "args": str((fake_cls, 5)),
                 "kwargs": str({})
             }
