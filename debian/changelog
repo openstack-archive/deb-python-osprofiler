@@ -1,8 +1,12 @@
-python-osprofiler (0.4.0-2) UNRELEASED; urgency=medium
+python-osprofiler (1.2.0-1) experimental; urgency=medium
 
+  [ Ondřej Nový ]
   * Fixed VCS URLs (https).
 
- -- Ondřej Nový <novy@ondrej.org>  Sun, 28 Feb 2016 15:45:22 +0100
+  [ Thomas Goirand ]
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 03 Mar 2016 22:40:52 +0800
 
 python-osprofiler (0.4.0-1) experimental; urgency=medium
 
