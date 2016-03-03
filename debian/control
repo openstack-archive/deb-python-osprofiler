@@ -30,7 +30,7 @@ Build-Depends-Indep: python-hacking (>= 0.8.0),
                      python3-webob (>= 1.2.3),
                      subunit (>= 0.0.18),
                      testrepository (>= 0.0.18),
-Standards-Version: 3.9.6
+Standards-Version: 3.9.7
 Vcs-Browser: https://anonscm.debian.org/cgit/openstack/python-osprofiler.git/
 Vcs-Git: https://anonscm.debian.org/git/openstack/python-osprofiler.git
 Homepage: https://github.com/stackforge/osprofiler

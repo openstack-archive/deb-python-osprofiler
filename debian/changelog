@@ -6,6 +6,7 @@ python-osprofiler (1.2.0-1) experimental; urgency=medium
   [ Thomas Goirand ]
   * New upstream release.
   * Fixed (build-)depends for this release.
+  * Standards-Version: 3.9.7 (no change).
 
  -- Thomas Goirand <zigo@debian.org>  Thu, 03 Mar 2016 22:40:52 +0800
 
