@@ -1,7 +1,11 @@
 python-osprofiler (1.2.0-2) UNRELEASED; urgency=medium
 
+  [ Corey Bryant ]
   * d/control: Add python-oslo.config to BDs to fix test import error.
   * d/p/drop-sphinx-git.patch, d/control: Drop use of git from sphinx config.
+
+  [ Ondřej Nový ]
+  * Standards-Version is 3.9.8 now (no change)
 
  -- Corey Bryant <corey.bryant@canonical.com>  Mon, 07 Mar 2016 13:19:40 -0500
 
