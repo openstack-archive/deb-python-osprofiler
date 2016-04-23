@@ -8,6 +8,7 @@ python-osprofiler (1.2.0-2) UNRELEASED; urgency=medium
   * Standards-Version is 3.9.8 now (no change)
   * d/copyright: Added myself to Debian part
   * Added simple Debian tests
+  * Fix copyright year in documentation to make build reproducible
 
  -- Corey Bryant <corey.bryant@canonical.com>  Mon, 07 Mar 2016 13:19:40 -0500
 
