@@ -1,0 +1,5 @@
+Depends: python-osprofiler
+Test-Command: cd "$ADTTMP" ; python -c "import osprofiler; print osprofiler.__version__"
+
+Depends: python3-osprofiler
+Test-Command: cd "$ADTTMP" ; python3 -c "import osprofiler; print(osprofiler.__version__)"
