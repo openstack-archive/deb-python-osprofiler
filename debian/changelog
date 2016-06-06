@@ -1,3 +1,9 @@
+python-osprofiler (1.3.0-2) experimental; urgency=medium
+
+  * Added a patch to "import warnings" in sphinx conf.py.
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 06 Jun 2016 10:19:37 +0000
+
 python-osprofiler (1.3.0-1) experimental; urgency=medium
 
   [ Corey Bryant ]
