@@ -1,0 +1,10 @@
+Code-Review+2: ChangBo Guo(gcb) <glongwave@gmail.com>
+Code-Review+1: Vipin Balachandran <vbala@vmware.com>
+Code-Review+2: Doug Hellmann <doug@doughellmann.com>
+Workflow+1: Doug Hellmann <doug@doughellmann.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 02 Jun 2016 16:17:48 +0000
+Reviewed-on: https://review.openstack.org/305003
+Project: openstack/deb-python-osprofiler
+Branch: refs/heads/master

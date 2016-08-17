@@ -1,0 +1,8 @@
+Code-Review+2: Boris Pavlovic <boris@pavlovic.me>
+Workflow+1: Dina Belova <dbelova@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 08 Aug 2016 14:01:32 +0000
+Reviewed-on: https://review.openstack.org/351790
+Project: openstack/deb-python-osprofiler
+Branch: refs/heads/master
