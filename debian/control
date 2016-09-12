@@ -13,19 +13,25 @@ Build-Depends: debhelper (>= 9),
                python3-all,
                python3-pbr,
                python3-setuptools,
-Build-Depends-Indep: python-hacking (>= 0.8.0),
+Build-Depends-Indep: python-ceilometerclient (>= 2.2.1),
+                     python-hacking (>= 0.8.0),
                      python-mock (>= 1.3),
                      python-oslo.config (>= 1:3.2.0),
+                     python-oslo.messaging (>= 5.2.0),
                      python-oslo.utils (>= 3.4.0),
                      python-oslosphinx (>= 2.5.0),
+                     python-pymongo (>= 3.0.2),
                      python-six (>= 1.9.0),
                      python-subunit (>= 0.0.18),
                      python-testtools (>= 1.4.0),
                      python-webob (>= 1.2.3),
+                     python3-ceilometerclient (>= 2.2.1),
                      python3-docutils,
                      python3-mock (>= 1.3),
                      python3-oslo.config (>= 1:3.2.0),
+                     python3-oslo.messaging (>= 5.2.0),
                      python3-oslo.utils (>= 3.4.0),
+                     python3-pymongo (>= 3.0.2),
                      python3-six (>= 1.9.0),
                      python3-subunit (>= 0.0.18),
                      python3-testtools (>= 1.4.0),
@@ -33,13 +39,14 @@ Build-Depends-Indep: python-hacking (>= 0.8.0),
                      subunit (>= 0.0.18),
                      testrepository (>= 0.0.18),
 Standards-Version: 3.9.8
-Vcs-Browser: https://anonscm.debian.org/cgit/openstack/python-osprofiler.git/
-Vcs-Git: https://anonscm.debian.org/git/openstack/python-osprofiler.git
+Vcs-Browser: https://git.openstack.org/cgit/openstack/deb-python-osprofiler
+Vcs-Git: https://git.openstack.org/openstack/deb-python-osprofiler
 Homepage: https://github.com/stackforge/osprofiler
 
 Package: python-osprofiler
 Architecture: all
-Depends: python-oslo.utils (>= 3.4.0),
+Depends: python-oslo.messaging (>= 5.2.0),
+         python-oslo.utils (>= 3.4.0),
          python-six (>= 1.9.0),
          python-webob (>= 1.2.3),
          ${misc:Depends},
@@ -61,7 +68,8 @@ Description: OpenStack Profiler Library - Python 2.x
 
 Package: python3-osprofiler
 Architecture: all
-Depends: python3-oslo.utils (>= 3.4.0),
+Depends: python3-oslo.messaging (>= 5.2.0),
+         python3-oslo.utils (>= 3.4.0),
          python3-six (>= 1.9.0),
          python3-webob (>= 1.2.3),
          ${misc:Depends},
