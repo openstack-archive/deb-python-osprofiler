@@ -1,0 +1,8 @@
+Code-Review+2: Dina Belova <dbelova@mirantis.com>
+Workflow+1: Dina Belova <dbelova@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 29 Nov 2016 03:05:02 +0000
+Reviewed-on: https://review.openstack.org/402474
+Project: openstack/deb-python-osprofiler
+Branch: refs/heads/master
