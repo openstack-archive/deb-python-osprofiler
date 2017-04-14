@@ -1,0 +1,8 @@
+Code-Review+2: Davanum Srinivas (dims) <davanum@gmail.com>
+Workflow+1: Tovin Seven <vinhnt@vn.fujitsu.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 14 Apr 2017 16:33:00 +0000
+Reviewed-on: https://review.openstack.org/448483
+Project: openstack/deb-python-osprofiler
+Branch: refs/heads/master
