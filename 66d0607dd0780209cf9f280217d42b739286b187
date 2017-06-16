@@ -1,0 +1,10 @@
+Code-Review+2: Tovin Seven <vinhnt@vn.fujitsu.com>
+Code-Review+1: Hieu LE <hieulq@vn.fujitsu.com>
+Code-Review+2: Vipin Balachandran <vbala@vmware.com>
+Workflow+1: Vipin Balachandran <vbala@vmware.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 16 Jun 2017 01:56:09 +0000
+Reviewed-on: https://review.openstack.org/472614
+Project: openstack/deb-python-osprofiler
+Branch: refs/heads/master
