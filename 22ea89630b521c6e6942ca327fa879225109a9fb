@@ -1,0 +1,8 @@
+Code-Review+2: Tovin Seven <vinhnt@vn.fujitsu.com>
+Workflow+1: Tovin Seven <vinhnt@vn.fujitsu.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 13 Jul 2017 12:47:37 +0000
+Reviewed-on: https://review.openstack.org/483171
+Project: openstack/deb-python-osprofiler
+Branch: refs/heads/master
